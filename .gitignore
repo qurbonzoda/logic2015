@@ -2,3 +2,7 @@
 *.dvi
 *.log
 *~
+*.class
+*.name
+*.iml
+*.xml
