@@ -36,23 +36,6 @@ extension Expression {
         }
     }
     
-    
-    public func forEach(_ body: (Expression) -> Void) {
-        body(self)
-        
-        switch self {
-        case .variable(_):
-            break
-        case let .implication(lhs, rhs),
-             .disjunction(lhs, rhs),
-             .conjunction(lhs, rhs):
-            lhs.forEach(body)
-            rhs.forEach(body)
-        case .negation(let negated):
-            negated.forEach(body)
-        }
-    }
-    
     func distinctVariables() -> [Expression] {
         var variables = Set<Expression>()
         
@@ -66,5 +49,53 @@ extension Expression {
         }
         
         return Array(variables)
+    }
+    
+    private func forEach(_ body: (Expression) -> Void) {
+        switch self {
+        case .variable(_):
+            break
+        case .implication(let lhs, let rhs),
+             .disjunction(let lhs, let rhs),
+             .conjunction(let lhs, let rhs):
+            lhs.forEach(body)
+            rhs.forEach(body)
+        case .negation(let negated):
+            negated.forEach(body)
+        }
+        
+        body(self)
+    }
+    
+    func proof(considering dict: [Expression: Bool]) -> [Expression] {
+        var formula = [Expression]()
+        
+        self.forEach {
+            switch $0 {
+            case .variable(_):
+                let variable = $0
+                variableProof[variable.evaluate(considering: dict)]!.forEach {
+                    formula.append($0.toExpression().substituting(["A": variable]))
+                }
+            case let .implication(lhs, rhs):
+                implicationProof[BoolPair(A: lhs.evaluate(considering: dict), B: rhs.evaluate(considering: dict))]!.forEach {
+                    formula.append($0.toExpression().substituting(["A": lhs, "B": rhs]))
+                }
+            case let .disjunction(lhs, rhs):
+                disjunctionProof[BoolPair(A: lhs.evaluate(considering: dict), B: rhs.evaluate(considering: dict))]!.forEach {
+                    formula.append($0.toExpression().substituting(["A": lhs, "B": rhs]))
+                }
+            case let .conjunction(lhs, rhs):
+                conjunctionProof[BoolPair(A: lhs.evaluate(considering: dict), B: rhs.evaluate(considering: dict))]!.forEach {
+                    formula.append($0.toExpression().substituting(["A": lhs, "B": rhs]))
+                }
+            case .negation(let negated):
+                negationProof[negated.evaluate(considering: dict)]!.forEach {
+                    formula.append($0.toExpression().substituting(["A": negated]))
+                }
+            }
+        }
+        
+        return formula
     }
 }

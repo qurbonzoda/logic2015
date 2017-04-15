@@ -25,8 +25,10 @@ public indirect enum Expression {
                 return value
         }
     }
-    
-    static func == (lhs: Expression, rhs: Expression) -> Bool {
+}
+
+extension Expression: Equatable {
+    public static func == (lhs: Expression, rhs: Expression) -> Bool {
         return lhs.description == rhs.description
     }
 }

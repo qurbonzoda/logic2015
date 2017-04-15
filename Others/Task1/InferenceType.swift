@@ -7,3 +7,10 @@
 //
 
 import Foundation
+
+enum InferenceType {
+    case axiom(Int)
+    case assumption(Int)
+    case modusPonens(Int, Int)
+    case notProven
+}

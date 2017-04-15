@@ -22,15 +22,15 @@ public extension String {
     }
     
     static func fromFile(path: String) throws -> String {
-        return try self.init(contentsOfFile: "/Users/bigdreamer/Programming/logic2015/Others/Others/axioms.txt", encoding: .utf8)
+        return try self.init(contentsOfFile: path, encoding: .utf8)
     }
 }
 
-public extension LogicalExpression {
-    func conformsTo(axiom: LogicalExpression) -> Bool {
-        var mapping = [String : LogicalExpression]()
+public extension Expression {
+    func conformsTo(axiom: Expression) -> Bool {
+        var mapping = [String : Expression]()
         
-        func check(_ first: LogicalExpression, and second: LogicalExpression) -> Bool {
+        func check(_ first: Expression, and second: Expression) -> Bool {
             switch (first, second) {
             case let (.implication(firstLhs, firstRhs), .implication(secondLhs, secondRhs)),
                  let (.disjunction(firstLhs, firstRhs), .disjunction(secondLhs, secondRhs)),
@@ -53,5 +53,19 @@ public extension LogicalExpression {
         }
         
         return check(axiom, and: self)
+    }
+    
+    func isModusPonensInferable(from first: Expression, and second: Expression) -> Bool {
+        switch second {
+        case let .implication(lhs, rhs) where lhs == first && rhs == self: return true
+        default: break
+        }
+        
+//        switch first {
+//        case let .implication(lhs, rhs) where lhs == second && rhs == self: return true
+//        default: break
+//        }
+        
+        return false
     }
 }
