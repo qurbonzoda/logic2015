@@ -1,0 +1,90 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		91FC83E00F61812B29BF17AF /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
+		91FC8FAA522BE4D43EFED5A0 /* LogicalExpression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogicalExpression.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		91FC8268E3C1FBBA2835BC57 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		91FC848BCA221798FF34D09C /* Task2 */ = {
+			isa = PBXGroup;
+			children = (
+				91FC8FAA522BE4D43EFED5A0 /* LogicalExpression.swift */,
+				91FC83E00F61812B29BF17AF /* Parser.swift */,
+			);
+			path = Task2;
+			sourceTree = "<group>";
+		};
+		91FC8AD931539E2A1BF5A68E = {
+			isa = PBXGroup;
+			children = (
+				91FC8268E3C1FBBA2835BC57 /* Products */,
+				91FC848BCA221798FF34D09C /* Task2 */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		91FC8D48C8A130C2EEB07440 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+			};
+			buildConfigurationList = 91FC8187D78EA99175DB8D4B /* Build configuration list for PBXProject "SwiftCode" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 91FC8AD931539E2A1BF5A68E;
+			productRefGroup = 91FC8268E3C1FBBA2835BC57 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		91FC837E84425F4F2BC9C35C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		91FC8D2E13BFE04124CCA15B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		91FC8187D78EA99175DB8D4B /* Build configuration list for PBXProject "SwiftCode" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				91FC837E84425F4F2BC9C35C /* Debug */,
+				91FC8D2E13BFE04124CCA15B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 91FC8D48C8A130C2EEB07440 /* Project object */;
+}
