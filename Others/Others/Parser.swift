@@ -6,8 +6,7 @@ import Foundation
 
 public typealias Assumptions = [Expression]
 public typealias Header = (gamma: Assumptions, inference: Expression)
-public typealias InferenceProof = (inference: Expression, proof: [Expression])
-public typealias InferenceFile = (header: Header, proof: InferenceProof)
+public typealias InferenceFile = (header: Header, proof: [Expression])
 
 private extension Array where Element == String {
     func removingEmptyExpressions() -> [Element] {
@@ -31,9 +30,9 @@ func parse(fileAtPath filePath: String) throws -> InferenceFile {
     
     let fileLines = content.components(separatedBy: .newlines).removingEmptyExpressions()
     let header = parse(header: fileLines.first!)
-    let proof = (inference: header.inference, proof: fileLines.dropFirst().map { $0.toExpression() })
+    let proof = fileLines.dropFirst().map { $0.toExpression() }
     
-    assert(proof.inference == proof.proof.last, "The last statement of proof must be proof inference")
+    assert(header.inference == proof.last, "The last statement of proof must be proof inference")
     
     return (header: header, proof: proof)
 }
@@ -51,13 +50,9 @@ func parse(header: String) -> Header {
     return (gamma: gamma, inference: inference)
 }
 
-func parse(proof: String) -> InferenceProof {
+func parse(proof: String) -> [Expression] {
     let proofLines = proof.components(separatedBy: .newlines).removingEmptyExpressions()
-    
-    let inference = proofLines.last!.toExpression()
-    let proofStatements = proofLines.map { $0.toExpression() }
-    
-    return (inference: inference, proof: proofStatements)
+    return proofLines.map { $0.toExpression() }
 }
 
 private class ExpressionParser {

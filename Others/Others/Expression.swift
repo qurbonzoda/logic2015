@@ -14,11 +14,11 @@ public indirect enum Expression {
     var description: String {
         switch self {
             case let .implication(left, right):
-                return "(\(left.description) -> \(right.description))"
+                return "(\(left.description)->\(right.description))"
             case let .disjunction(left, right):
-                return "(\(left.description) | \(right.description))"
+                return "(\(left.description)|\(right.description))"
             case let .conjunction(left, right):
-                return "\(left.description) & \(right.description)"
+                return "(\(left.description)&\(right.description))"
             case .negation(let expression):
                 return "!\(expression.description)"
             case .variable(let value):

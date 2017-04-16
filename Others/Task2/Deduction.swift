@@ -8,57 +8,86 @@
 
 import Foundation
 
-func proofDeduction(gamma: [Expression], alpha: Expression, proof: InferenceProof) -> [Expression] {
-    //assert(proof.inference == proof.proof.last!)
-    var deductionProof = [Expression]()
+func proofDeduction(header: Header, proof: [FormulaInferenceType]) -> [FormulaInferenceType] {
+    assert(header.gamma.count > 0)
+    assert(proof.count > 0)
+    assert(header.inference == proof.last!.formula)
     
-    for (index, formula) in proof.proof.enumerated() {
-        let precedingFormulas: [Expression]
+    let alpha = header.gamma.last!
+    
+    var deductionProof = [FormulaInferenceType]()
+    var formulaNewIndex = [Int]()
+    
+    let badFormula = "(b->c)"
+    
+    for inference in proof {
+        let precedingFormulas: [FormulaInferenceType]
         
-        if isAxiom(formula) || gamma.contains(formula) {
+        if inference.formula == alpha {
             precedingFormulas = [
-                "A",
-                "A->(B->A)"
-                ].map { $0.toExpression().substituting(["A": formula, "B": alpha]) }
-        } else if formula == alpha {
-            precedingFormulas = [
-                "A->(A->A)",
-                "(A->(A->A))->(A->((A->A)->A))->(A->A)",
-                "(A->((A->A)->A))->(A->A)",
-                "(A->((A->A)->A))"
-                ].map { $0.toExpression().substituting(["A": formula]) }
+                (0, "A->(A->A)",                                .axiom(0)),
+                (1, "(A->(A->A))->(A->((A->A)->A))->(A->A)",    .axiom(1)),
+                (2, "(A->((A->A)->A))->(A->A)",                 .modusPonens(0, 1)),
+                (3, "(A->((A->A)->A))",                         .axiom(0)),
+                (4, "A->A",                                     .modusPonens(3, 2))
+            ]
+            .map { ($0.0, $0.1.toExpression().substituting(["A": alpha]), $0.2) }
         } else {
-            let prefix = proof.proof.prefix(upTo: index)
-            
-            var first: Expression?
-            iteration: for precedingFormula in prefix {
-                switch precedingFormula {
-                case let .implication(lhs, rhs) where rhs == formula:
-                    if prefix.contains(lhs) {
-                        first = lhs
-                        break iteration
-                    }
-                    break
-                default:
-                    break
-                }
+            switch inference.type {
+            case .axiom(let i):
+                precedingFormulas = [
+                    (0, "A",            .axiom(i)),
+                    (1, "A->(B->A)",    .axiom(0)),
+                    (2, "B->A",         .modusPonens(0, 1))
+                ]
+                .map { ($0.0, $0.1.toExpression().substituting(["A": inference.formula, "B": alpha]), $0.2) }
+                    
+            case .assumption(let i):
+//                assert(header.gamma[i] == inference.formula)
+                precedingFormulas = [
+                    (0, "A",            .assumption(i)),
+                    (1, "A->(B->A)",    .axiom(0)),
+                    (2, "B->A",         .modusPonens(0, 1))
+                ]
+                .map { ($0.0, $0.1.toExpression().substituting(["A": inference.formula, "B": alpha]), $0.2) }
+                
+            case .modusPonens(let j, let k):
+                precedingFormulas = [
+                    (0, "(A->B)->(A->(B->C))->(A->C)",  .axiom(1)),
+                    (1, "(A->(B->C))->(A->C)",          .modusPonens(formulaNewIndex[j] - deductionProof.count, 0)),
+                    (2, "A->C",                         .modusPonens(formulaNewIndex[k] - deductionProof.count, 1))
+                ]
+                .map { ($0.0, $0.1.toExpression().substituting(["A": alpha, "B": proof[j].formula, "C": inference.formula]), $0.2) }
+                
+            case .notProven:
+                fatalError("The proof must be correct to do deduction")
             }
-            
-//            if first == nil {
-//                print("for (\(index), \(formula.description)) nothing was found.")
-//                print("assumptions: \(gamma.reduce("", { $0 + $1.description + " " }))")
-//                print("preceding formulas: \(prefix.reduce("", { $0 + "\r" + $1.description }))")
-//                print("following formulas: \(proof.proof.suffix(from: index).reduce("", { $0 + "\r" + $1.description }))")
-//            }
-            
-            precedingFormulas = [
-                "(A->B)->(A->(B->C))->(A->C)",
-                "(A->(B->C))->(A->C)"
-                ].map { $0.toExpression().substituting(["A": alpha, "B": first!, "C": formula]) }
         }
         
-        deductionProof.append(contentsOf: precedingFormulas)
-        deductionProof.append(.implication(alpha, formula))
+        if (precedingFormulas.contains(where: { $0.formula.description == badFormula })) {
+            print(precedingFormulas.reduce("") { $0 + "\r" + $1.formula.description })
+        }
+        
+        deductionProof.append(contentsOf: precedingFormulas.formulaIndicesShifted(by: deductionProof.count))
+        formulaNewIndex.append(deductionProof.count - 1)
     }
+    
+//    let validationInference = Expression.implication(alpha, header.inference)
+//    let validationGamma = Array(header.gamma.dropLast())
+//    let validationInferenceFile = (header: (gamma: validationGamma, inference: validationInference),
+//                                   proof: deductionProof.map { $0.formula })
+//    let validation = validatePropositionalCalculusProve(inferenceFile: validationInferenceFile)
+//    
+//    print("################\r\r" + validation
+//        .map { "(\($0.line + 1)) \($0.formula.description) (\($0.type.description))" }
+//        .reduce("") { $0 + $1 + "\r" })
+//    
+//    assert(!validation.contains {
+//        switch $0.type {
+//        case .notProven:    return true
+//        default:            return false
+//        }
+//    })
+    
     return deductionProof
 }

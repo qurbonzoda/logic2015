@@ -12,18 +12,6 @@ public extension String {
     func contains(_ character: Character) -> Bool {
         return contains(String(character))
     }
-    
-    func lines() -> [String] {
-        var lines = [String]()
-        enumerateLines { (line: String, flag: inout Bool) in
-            lines.append(line)
-        }
-        return lines
-    }
-    
-    static func fromFile(path: String) throws -> String {
-        return try self.init(contentsOfFile: path, encoding: .utf8)
-    }
 }
 
 public extension Expression {
@@ -53,19 +41,5 @@ public extension Expression {
         }
         
         return check(axiom, and: self)
-    }
-    
-    func isModusPonensInferable(from first: Expression, and second: Expression) -> Bool {
-        switch second {
-        case let .implication(lhs, rhs) where lhs == first && rhs == self: return true
-        default: break
-        }
-        
-//        switch first {
-//        case let .implication(lhs, rhs) where lhs == second && rhs == self: return true
-//        default: break
-//        }
-        
-        return false
     }
 }

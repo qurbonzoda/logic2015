@@ -67,35 +67,56 @@ extension Expression {
         body(self)
     }
     
-    func proof(considering dict: [Expression: Bool]) -> [Expression] {
-        var formula = [Expression]()
+    func proof(considering dict: [Expression: Bool], gamma: [Expression]) -> [FormulaInferenceType] {
+        var formulas = [FormulaInferenceType]()
         
         self.forEach {
+            let proof: [FormulaInferenceType]
             switch $0 {
             case .variable(_):
                 let variable = $0
-                variableProof[variable.evaluate(considering: dict)]!.forEach {
-                    formula.append($0.toExpression().substituting(["A": variable]))
+                proof = variableProof[variable.evaluate(considering: dict)]!.map {
+                    ($0.line, $0.formula.substituting(["A": variable]), $0.type)
                 }
             case let .implication(lhs, rhs):
-                implicationProof[BoolPair(A: lhs.evaluate(considering: dict), B: rhs.evaluate(considering: dict))]!.forEach {
-                    formula.append($0.toExpression().substituting(["A": lhs, "B": rhs]))
+                proof = implicationProof[BoolPair(A: lhs.evaluate(considering: dict), B: rhs.evaluate(considering: dict))]!.map {
+                    ($0.line, $0.formula.substituting(["A": lhs, "B": rhs]), $0.type)
                 }
             case let .disjunction(lhs, rhs):
-                disjunctionProof[BoolPair(A: lhs.evaluate(considering: dict), B: rhs.evaluate(considering: dict))]!.forEach {
-                    formula.append($0.toExpression().substituting(["A": lhs, "B": rhs]))
+                proof = disjunctionProof[BoolPair(A: lhs.evaluate(considering: dict), B: rhs.evaluate(considering: dict))]!.map {
+                    ($0.line, $0.formula.substituting(["A": lhs, "B": rhs]), $0.type)
                 }
             case let .conjunction(lhs, rhs):
-                conjunctionProof[BoolPair(A: lhs.evaluate(considering: dict), B: rhs.evaluate(considering: dict))]!.forEach {
-                    formula.append($0.toExpression().substituting(["A": lhs, "B": rhs]))
+                proof = conjunctionProof[BoolPair(A: lhs.evaluate(considering: dict), B: rhs.evaluate(considering: dict))]!.map {
+                    ($0.line, $0.formula.substituting(["A": lhs, "B": rhs]), $0.type)
                 }
             case .negation(let negated):
-                negationProof[negated.evaluate(considering: dict)]!.forEach {
-                    formula.append($0.toExpression().substituting(["A": negated]))
+                proof = negationProof[negated.evaluate(considering: dict)]!.map {
+                    ($0.line, $0.formula.substituting(["A": negated]), $0.type)
                 }
             }
+            let assumptionsCorrected: [FormulaInferenceType] = proof.map { inference in
+                let actualType: InferenceType
+                switch inference.type {
+                case .assumption(_):
+                    if let indexInGamma = gamma.index(of: inference.formula) {
+                        actualType = .assumption(indexInGamma)
+                    } else if let indexInFormulas = formulas.index(where: { inference.formula == $0.formula }) {
+                        switch formulas[indexInFormulas].type {
+                        case .modusPonens(let i, let j):    actualType = .modusPonens(i - formulas.count, j - formulas.count)
+                        default:                            actualType = formulas[indexInFormulas].type
+                        }
+                    } else {
+                        fatalError("Unreachable")
+                    }
+                default:
+                    actualType = inference.type
+                }
+                return (inference.line, inference.formula, actualType)
+            }
+            formulas.append(contentsOf: assumptionsCorrected.formulaIndicesShifted(by: formulas.count))
         }
         
-        return formula
+        return formulas
     }
 }

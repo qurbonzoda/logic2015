@@ -8,20 +8,20 @@
 
 import Foundation
 
+private let testsDirectory = "/Users/bigdreamer/Programming/logic2015/Others/Task2/Tests/"
+
 do {
-    let testsDirectory = "/Users/bigdreamer/Programming/logic2015/Others/Task2/Tests/"
-    
     let inputTests = try FileManager().contentsOfDirectory(atPath: testsDirectory).filter { $0.hasSuffix(".in") }
 
     for var inputPath in inputTests {
         inputPath = testsDirectory + inputPath
         let outputPath = inputPath.replacingOccurrences(of: ".in", with: ".out")
 
-        let file = try parse(fileAtPath: inputPath)
-        let assumptions = file.header.gamma
+        let inferenceFile = try parse(fileAtPath: inputPath)
+        let inferenceTypes = validatePropositionalCalculusProve(inferenceFile: inferenceFile)
         
-        try proofDeduction(gamma: Array(assumptions.dropLast()), alpha: assumptions.last!, proof: file.proof)
-            .reduce("", { $0 + $1.description + "\n" })
+        try proofDeduction(header: inferenceFile.header, proof: inferenceTypes)
+            .reduce("", { $0 + $1.formula.description + "\n" })
             .write(toFile: outputPath, atomically: true, encoding: .utf8)
     
 }

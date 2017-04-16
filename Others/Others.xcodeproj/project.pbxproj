@@ -15,13 +15,29 @@
 		C60981251DDBE04800FEB124 /* Deduction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60981241DDBE04800FEB124 /* Deduction.swift */; };
 		C60981261DDBE06300FEB124 /* Deduction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60981241DDBE04800FEB124 /* Deduction.swift */; };
 		C62603391EA21D06002661B9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603381EA21D06002661B9 /* main.swift */; };
-		C626033E1EA21D84002661B9 /* PropositionalCalculusProveChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C626033D1EA21D84002661B9 /* PropositionalCalculusProveChecker.swift */; };
+		C626033E1EA21D84002661B9 /* PropositionalCalculusProveValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C626033D1EA21D84002661B9 /* PropositionalCalculusProveValidator.swift */; };
 		C62603401EA21E2A002661B9 /* InferenceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C626033F1EA21E2A002661B9 /* InferenceType.swift */; };
 		C626034B1EA22D0E002661B9 /* Axioms.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603461EA22D0E002661B9 /* Axioms.swift */; };
 		C626034C1EA22D0E002661B9 /* Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603471EA22D0E002661B9 /* Expression.swift */; };
 		C626034D1EA22D0E002661B9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603481EA22D0E002661B9 /* Extensions.swift */; };
-		C626034E1EA22D0E002661B9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603491EA22D0E002661B9 /* main.swift */; };
 		C626034F1EA22D0E002661B9 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C626034A1EA22D0E002661B9 /* Parser.swift */; };
+		C62603501EA231F1002661B9 /* Axioms.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603461EA22D0E002661B9 /* Axioms.swift */; };
+		C62603511EA231F2002661B9 /* Axioms.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603461EA22D0E002661B9 /* Axioms.swift */; };
+		C62603521EA231F3002661B9 /* Axioms.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603461EA22D0E002661B9 /* Axioms.swift */; };
+		C62603531EA231F6002661B9 /* Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603471EA22D0E002661B9 /* Expression.swift */; };
+		C62603541EA231F7002661B9 /* Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603471EA22D0E002661B9 /* Expression.swift */; };
+		C62603551EA231F7002661B9 /* Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603471EA22D0E002661B9 /* Expression.swift */; };
+		C62603561EA231FA002661B9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603481EA22D0E002661B9 /* Extensions.swift */; };
+		C62603571EA231FA002661B9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603481EA22D0E002661B9 /* Extensions.swift */; };
+		C62603581EA231FB002661B9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603481EA22D0E002661B9 /* Extensions.swift */; };
+		C62603591EA231FE002661B9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62603491EA22D0E002661B9 /* main.swift */; };
+		C626035C1EA23202002661B9 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C626034A1EA22D0E002661B9 /* Parser.swift */; };
+		C626035D1EA23202002661B9 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C626034A1EA22D0E002661B9 /* Parser.swift */; };
+		C626035E1EA23203002661B9 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C626034A1EA22D0E002661B9 /* Parser.swift */; };
+		C62603641EA279C1002661B9 /* PropositionalCalculusProveValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C626033D1EA21D84002661B9 /* PropositionalCalculusProveValidator.swift */; };
+		C62603651EA279C3002661B9 /* PropositionalCalculusProveValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C626033D1EA21D84002661B9 /* PropositionalCalculusProveValidator.swift */; };
+		C62603661EA27B26002661B9 /* InferenceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C626033F1EA21E2A002661B9 /* InferenceType.swift */; };
+		C62603671EA27B27002661B9 /* InferenceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C626033F1EA21E2A002661B9 /* InferenceType.swift */; };
 		C6A566441D56505F00077046 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A566431D56505F00077046 /* main.swift */; };
 /* End PBXBuildFile section */
 
@@ -65,7 +81,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		91FC83E046E92285BFC59153 /* test-input.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "test-input.txt"; sourceTree = "<group>"; };
 		C609810C1DDA410A00FEB124 /* Task3 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Task3; sourceTree = BUILT_PRODUCTS_DIR; };
 		C609810E1DDA410A00FEB124 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C60981131DDA47E800FEB124 /* Task3Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task3Extensions.swift; sourceTree = "<group>"; };
@@ -75,18 +90,18 @@
 		C60981241DDBE04800FEB124 /* Deduction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Deduction.swift; sourceTree = "<group>"; };
 		C62603361EA21D06002661B9 /* Task1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Task1; sourceTree = BUILT_PRODUCTS_DIR; };
 		C62603381EA21D06002661B9 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		C626033D1EA21D84002661B9 /* PropositionalCalculusProveChecker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropositionalCalculusProveChecker.swift; sourceTree = "<group>"; };
+		C626033D1EA21D84002661B9 /* PropositionalCalculusProveValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropositionalCalculusProveValidator.swift; sourceTree = "<group>"; };
 		C626033F1EA21E2A002661B9 /* InferenceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InferenceType.swift; sourceTree = "<group>"; };
 		C62603461EA22D0E002661B9 /* Axioms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Axioms.swift; sourceTree = "<group>"; };
 		C62603471EA22D0E002661B9 /* Expression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Expression.swift; sourceTree = "<group>"; };
 		C62603481EA22D0E002661B9 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C62603491EA22D0E002661B9 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		C626034A1EA22D0E002661B9 /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
+		C62603631EA261A0002661B9 /* Tests */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Tests; sourceTree = "<group>"; };
 		C6519CEA1D8E1D1B005EA0ED /* Tests */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Tests; sourceTree = "<group>"; };
 		C6A566311D564F1F00077046 /* Others */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Others; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6A566411D56505F00077046 /* Task2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Task2; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6A566431D56505F00077046 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		C6EEF8DB1D8DC75E000F539A /* test-output.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "test-output.txt"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,8 +150,9 @@
 		C62603371EA21D06002661B9 /* Task1 */ = {
 			isa = PBXGroup;
 			children = (
+				C62603631EA261A0002661B9 /* Tests */,
 				C62603381EA21D06002661B9 /* main.swift */,
-				C626033D1EA21D84002661B9 /* PropositionalCalculusProveChecker.swift */,
+				C626033D1EA21D84002661B9 /* PropositionalCalculusProveValidator.swift */,
 				C626033F1EA21E2A002661B9 /* InferenceType.swift */,
 			);
 			path = Task1;
@@ -180,9 +196,7 @@
 			isa = PBXGroup;
 			children = (
 				C6519CEA1D8E1D1B005EA0ED /* Tests */,
-				C6EEF8DB1D8DC75E000F539A /* test-output.txt */,
 				C6A566431D56505F00077046 /* main.swift */,
-				91FC83E046E92285BFC59153 /* test-input.txt */,
 				C60981171DDA4BAE00FEB124 /* Task2Extensions.swift */,
 				C60981241DDBE04800FEB124 /* Deduction.swift */,
 			);
@@ -272,10 +286,12 @@
 				TargetAttributes = {
 					C609810B1DDA410A00FEB124 = {
 						CreatedOnToolsVersion = 8.0;
+						LastSwiftMigration = 0830;
 						ProvisioningStyle = Automatic;
 					};
 					C62603351EA21D06002661B9 = {
 						CreatedOnToolsVersion = 8.3.1;
+						LastSwiftMigration = 0830;
 						ProvisioningStyle = Automatic;
 					};
 					C6A566301D564F1F00077046 = {
@@ -316,8 +332,14 @@
 			files = (
 				C609811F1DDB4E7000FEB124 /* Task2Extensions.swift in Sources */,
 				C60981211DDB525800FEB124 /* LogicalOperationProofs.swift in Sources */,
+				C626035E1EA23203002661B9 /* Parser.swift in Sources */,
+				C62603521EA231F3002661B9 /* Axioms.swift in Sources */,
+				C62603581EA231FB002661B9 /* Extensions.swift in Sources */,
 				C60981261DDBE06300FEB124 /* Deduction.swift in Sources */,
 				C609810F1DDA410A00FEB124 /* main.swift in Sources */,
+				C62603651EA279C3002661B9 /* PropositionalCalculusProveValidator.swift in Sources */,
+				C62603551EA231F7002661B9 /* Expression.swift in Sources */,
+				C62603661EA27B26002661B9 /* InferenceType.swift in Sources */,
 				C60981141DDA47E800FEB124 /* Task3Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -330,10 +352,9 @@
 				C626034C1EA22D0E002661B9 /* Expression.swift in Sources */,
 				C62603391EA21D06002661B9 /* main.swift in Sources */,
 				C626034D1EA22D0E002661B9 /* Extensions.swift in Sources */,
-				C626034E1EA22D0E002661B9 /* main.swift in Sources */,
 				C626034F1EA22D0E002661B9 /* Parser.swift in Sources */,
 				C62603401EA21E2A002661B9 /* InferenceType.swift in Sources */,
-				C626033E1EA21D84002661B9 /* PropositionalCalculusProveChecker.swift in Sources */,
+				C626033E1EA21D84002661B9 /* PropositionalCalculusProveValidator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,6 +362,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C62603511EA231F2002661B9 /* Axioms.swift in Sources */,
+				C62603561EA231FA002661B9 /* Extensions.swift in Sources */,
+				C626035C1EA23202002661B9 /* Parser.swift in Sources */,
+				C62603591EA231FE002661B9 /* main.swift in Sources */,
+				C62603531EA231F6002661B9 /* Expression.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,9 +374,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C62603501EA231F1002661B9 /* Axioms.swift in Sources */,
+				C62603671EA27B27002661B9 /* InferenceType.swift in Sources */,
+				C62603571EA231FA002661B9 /* Extensions.swift in Sources */,
 				C60981181DDA4BAE00FEB124 /* Task2Extensions.swift in Sources */,
+				C626035D1EA23202002661B9 /* Parser.swift in Sources */,
 				C60981251DDBE04800FEB124 /* Deduction.swift in Sources */,
+				C62603641EA279C1002661B9 /* PropositionalCalculusProveValidator.swift in Sources */,
 				C6A566441D56505F00077046 /* main.swift in Sources */,
+				C62603541EA231F7002661B9 /* Expression.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

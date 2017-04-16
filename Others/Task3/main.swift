@@ -8,22 +8,9 @@
 
 import Foundation
 
-func removingDuplicates(from formulas: [Expression]) -> [Expression] {
-    var addedFormulas = Set<String>()
-    var duplicatesRemoved = [Expression]()
-    for formula in formulas {
-        let description = formula.description
-        if !addedFormulas.contains(description) {
-            addedFormulas.insert(description)
-            duplicatesRemoved.append(formula)
-        }
-    }
-    return duplicatesRemoved
-}
+private let testsDirectory = "/Users/bigdreamer/Programming/logic2015/Others/Task3/Tests/"
 
 do {
-    let testsDirectory = "/Users/bigdreamer/Programming/logic2015/Others/Task3/Tests/"
-    
     let inputTests = try FileManager().contentsOfDirectory(atPath: testsDirectory).filter { $0.hasSuffix(".in") }
     
     testCase: for var inputPath in inputTests {
@@ -36,7 +23,7 @@ do {
         print("variables: \(expressionVariables.map { $0.description })")
         print("formula to prove: \(typedExpression.description)")
         
-        var expressionProof = [[Expression]]()
+        var expressionProof = [[FormulaInferenceType]]()
         
         let masksCount = (1 << expressionVariables.count)
         
@@ -45,8 +32,10 @@ do {
         
         for mask in 0..<masksCount {
             var considerations = [Expression: Bool]()
+            var gamma = [Expression]()
             for (index, variable) in expressionVariables.enumerated() {
                 considerations[variable] = mask & (1 << (expressionVariables.count - index - 1)) != 0
+                gamma.append(mask & (1 << (expressionVariables.count - index - 1)) == 0 ? .negation(variable) : variable)
             }
             
             print(considerations.map { $0.value ? $0.key.description : $0.key.description + "!" })
@@ -60,7 +49,7 @@ do {
                 continue testCase
             }
             
-            expressionProof.append(removingDuplicates(from: typedExpression.proof(considering: considerations)))
+            expressionProof.append(typedExpression.proof(considering: considerations, gamma: gamma))
         }
         
         
@@ -69,7 +58,7 @@ do {
             
             print("alpha: \(alpha.description)")
             
-            var currentStepProof = [[Expression]]()
+            var currentStepProof = [[FormulaInferenceType]]()
             for mask in 0..<(1 << alphaIndex) {
                 
                 let gamma = expressionVariables.prefix(upTo: alphaIndex).enumerated().map {
@@ -78,49 +67,48 @@ do {
                 
                 print("gamma: \(gamma.reduce("", { $0 + $1.description + ", " }))")
                 
-//                assert( expressionProof[mask * 2].last! == typedExpression)
+//                assert( expressionProof[mask * 2].last!.formula == typedExpression)
+                let notAlphaDeduction = proofDeduction(header: (gamma: gamma + [.negation(alpha)], inference: typedExpression),
+                                                       proof: expressionProof[mask * 2])
+                var alphaRemovingProof = notAlphaDeduction
+//                assert(expressionProof[mask * 2].contains { $0.formula == .negation(alpha) } )
+//                assert(notAlphaDeduction.last!.formula == .implication(.negation(alpha), typedExpression))
+
+//                assert( expressionProof[mask * 2 + 1].last!.formula == typedExpression)
+                let alphaDeduction = proofDeduction(header: (gamma: gamma + [alpha], inference: typedExpression),
+                                                    proof: expressionProof[mask * 2 + 1])
+                alphaRemovingProof.append(contentsOf: alphaDeduction.formulaIndicesShifted(by: alphaRemovingProof.count))
+//                assert(expressionProof[mask * 2 + 1].contains { $0.formula == alpha })
+//                assert(alphaDeduction.last!.formula == .implication(alpha, typedExpression))
                 
-                let notAlphaDeduction = proofDeduction(gamma: gamma,
-                                                       alpha: .negation(alpha),
-                                                       proof: (inference: typedExpression, proof: expressionProof[mask * 2]))
-                
-//                assert(expressionProof[mask * 2].contains(.negation(alpha)))
-//                assert(notAlphaDeduction.last! == .implication(.negation(alpha), typedExpression))
-//                
-//                assert( expressionProof[mask * 2 + 1].last! == typedExpression)
-                
-                let alphaDeduction = proofDeduction(gamma: gamma,
-                                                    alpha: alpha,
-                                                    proof: (inference: typedExpression, proof: expressionProof[mask * 2 + 1]))
-                
-//                assert(expressionProof[mask * 2 + 1].contains(alpha))
-                assert(alphaDeduction.last! == .implication(alpha, typedExpression))
-                
-                let alphaOrNotAlpha = aOrNotAProof.map { $0.toExpression().substituting(["A": alpha]) }
+                let alphaOrNotAlpha: [FormulaInferenceType]
+                    = aOrNotAProof.map { ($0.line, $0.formula.substituting(["A": alpha]), $0.type) }
+                alphaRemovingProof.append(contentsOf: alphaOrNotAlpha.formulaIndicesShifted(by: alphaRemovingProof.count))
                 
                 let axiom8 = axioms[7].substituting(["A": alpha, "B": .negation(alpha), "C": typedExpression])
+                alphaRemovingProof.append( (alphaRemovingProof.count, axiom8, InferenceType.axiom(7)) )
                 
                 guard case let .implication(_, mp1) = axiom8 else { fatalError() }
+                alphaRemovingProof.append( (alphaRemovingProof.count, mp1, InferenceType.modusPonens(notAlphaDeduction.count + alphaDeduction.count - 1, alphaRemovingProof.count - 1)) )
                 
                 guard case let .implication(_, mp2) = mp1 else { fatalError() }
+                alphaRemovingProof.append( (alphaRemovingProof.count, mp2, InferenceType.modusPonens(notAlphaDeduction.count - 1, alphaRemovingProof.count - 1)) )
                 
                 guard case let .implication(_, mp3) = mp2 else { fatalError() }
+                alphaRemovingProof.append( (alphaRemovingProof.count, mp3, InferenceType.modusPonens(notAlphaDeduction.count + alphaDeduction.count + alphaOrNotAlpha.count - 1, alphaRemovingProof.count - 1)) )
                 
 //                assert(mp3 == typedExpression)
                 
-                let alphaRemovingProof = notAlphaDeduction + alphaDeduction + alphaOrNotAlpha + [axiom8, mp1, mp2, mp3]
-                
-                currentStepProof.append(removingDuplicates(from: alphaRemovingProof))
+                currentStepProof.append(alphaRemovingProof)
             }
             
             expressionProof = currentStepProof
-            
 //            assert(expressionProof.count == (1 << alphaIndex))
         }
         
         let outputPath = inputPath.replacingOccurrences(of: ".in", with: ".out")
-        try expressionProof[0].reduce("", { $0 + $1.description + "\r" })
-            .write(toFile: outputPath, atomically: true, encoding: .utf8)
+        try expressionProof[0].reduce("", { $0 + $1.formula.description + "\r" })
+            .write(toFile: outputPath, atomically: false, encoding: .utf8)
     }
 } catch {
         print("an error occured, cause: \(error)")

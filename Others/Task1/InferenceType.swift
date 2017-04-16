@@ -13,4 +13,17 @@ enum InferenceType {
     case assumption(Int)
     case modusPonens(Int, Int)
     case notProven
+    
+    var description: String {
+        switch self {
+        case .axiom(let n):
+            return "Сх. акс. \(n + 1)"
+        case .assumption(let n):
+            return "Предп. \(n + 1)"
+        case .modusPonens(let i, let j):
+            return "M.P. \(i + 1) \(j + 1)"
+        case .notProven:
+            return "Не доказано"
+        }
+    }
 }

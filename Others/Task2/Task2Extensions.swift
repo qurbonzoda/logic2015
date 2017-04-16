@@ -24,3 +24,14 @@ extension Expression {
         }
     }
 }
+
+extension Array where Element == FormulaInferenceType {
+    func formulaIndicesShifted(by count: Int) -> [FormulaInferenceType] {
+        return map {
+            switch $0.type {
+            case let .modusPonens(i, j):    return ($0.line, $0.formula, .modusPonens(i + count, j + count))
+            default:                        return ($0.line, $0.formula, $0.type)
+            }
+        }
+    }
+}
