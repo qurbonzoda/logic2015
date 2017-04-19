@@ -14,6 +14,12 @@ public extension String {
     }
 }
 
+extension Expression: Hashable {
+    public var hashValue: Int {
+        return self.description.hashValue
+    }
+}
+
 public extension Expression {
     func conformsTo(axiom: Expression) -> Bool {
         var mapping = [String : Expression]()

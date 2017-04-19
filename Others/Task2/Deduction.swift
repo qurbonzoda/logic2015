@@ -18,7 +18,7 @@ func proofDeduction(header: Header, proof: [FormulaInferenceType]) -> [FormulaIn
     var deductionProof = [FormulaInferenceType]()
     var formulaNewIndex = [Int]()
     
-    let badFormula = "(b->c)"
+//    let badFormula = "(b->c)"
     
     for inference in proof {
         let precedingFormulas: [FormulaInferenceType]
@@ -64,9 +64,9 @@ func proofDeduction(header: Header, proof: [FormulaInferenceType]) -> [FormulaIn
             }
         }
         
-        if (precedingFormulas.contains(where: { $0.formula.description == badFormula })) {
-            print(precedingFormulas.reduce("") { $0 + "\r" + $1.formula.description })
-        }
+//        if (precedingFormulas.contains(where: { $0.formula.description == badFormula })) {
+//            print(precedingFormulas.reduce("") { $0 + "\r" + $1.formula.description })
+//        }
         
         deductionProof.append(contentsOf: precedingFormulas.formulaIndicesShifted(by: deductionProof.count))
         formulaNewIndex.append(deductionProof.count - 1)

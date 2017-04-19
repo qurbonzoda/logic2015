@@ -8,11 +8,6 @@
 
 import Foundation
 
-extension Expression: Hashable {
-    public var hashValue: Int {
-        return self.description.hashValue
-    }
-}
 
 extension Expression {
     func evaluate(considering dict: [Expression: Bool]) -> Bool {
