@@ -6,3 +6,6 @@
 *.name
 *.iml
 *.xml
+*.out
+.DS_Store
+UserInterfaceState.xcuserstate

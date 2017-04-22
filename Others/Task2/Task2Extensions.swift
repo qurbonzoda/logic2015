@@ -8,19 +8,19 @@
 
 import Foundation
 
-extension Expression {
-    func substituting(_ dict: [String : Expression]) -> Expression {
-        switch self {
+extension Formula {
+    func substituting(_ dict: [String : Formula]) -> Formula {
+        switch self.unboxed {
         case .variable(let value):
             return dict[value] ?? self
         case let .implication(lhs, rhs):
-            return .implication(lhs.substituting(dict), rhs.substituting(dict))
+            return Formula(.implication(lhs.substituting(dict), rhs.substituting(dict)))
         case let .disjunction(lhs, rhs):
-            return .disjunction(lhs.substituting(dict), rhs.substituting(dict))
+            return Formula(.disjunction(lhs.substituting(dict), rhs.substituting(dict)))
         case let .conjunction(lhs, rhs):
-            return .conjunction(lhs.substituting(dict), rhs.substituting(dict))
+            return Formula(.conjunction(lhs.substituting(dict), rhs.substituting(dict)))
         case .negation(let negated):
-            return .negation(negated.substituting(dict))
+            return Formula(.negation(negated.substituting(dict)))
         }
     }
 }

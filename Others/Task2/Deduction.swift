@@ -31,7 +31,7 @@ func proofDeduction(header: Header, proof: [FormulaInferenceType]) -> [FormulaIn
                 (3, "(A->((A->A)->A))",                         .axiom(0)),
                 (4, "A->A",                                     .modusPonens(3, 2))
             ]
-            .map { ($0.0, $0.1.toExpression().substituting(["A": alpha]), $0.2) }
+            .map { ($0.0, $0.1.toFormula().substituting(["A": alpha]), $0.2) }
         } else {
             switch inference.type {
             case .axiom(let i):
@@ -40,7 +40,7 @@ func proofDeduction(header: Header, proof: [FormulaInferenceType]) -> [FormulaIn
                     (1, "A->(B->A)",    .axiom(0)),
                     (2, "B->A",         .modusPonens(0, 1))
                 ]
-                .map { ($0.0, $0.1.toExpression().substituting(["A": inference.formula, "B": alpha]), $0.2) }
+                .map { ($0.0, $0.1.toFormula().substituting(["A": inference.formula, "B": alpha]), $0.2) }
                     
             case .assumption(let i):
 //                assert(header.gamma[i] == inference.formula)
@@ -49,7 +49,7 @@ func proofDeduction(header: Header, proof: [FormulaInferenceType]) -> [FormulaIn
                     (1, "A->(B->A)",    .axiom(0)),
                     (2, "B->A",         .modusPonens(0, 1))
                 ]
-                .map { ($0.0, $0.1.toExpression().substituting(["A": inference.formula, "B": alpha]), $0.2) }
+                .map { ($0.0, $0.1.toFormula().substituting(["A": inference.formula, "B": alpha]), $0.2) }
                 
             case .modusPonens(let j, let k):
                 precedingFormulas = [
@@ -57,7 +57,7 @@ func proofDeduction(header: Header, proof: [FormulaInferenceType]) -> [FormulaIn
                     (1, "(A->(B->C))->(A->C)",          .modusPonens(formulaNewIndex[j] - deductionProof.count, 0)),
                     (2, "A->C",                         .modusPonens(formulaNewIndex[k] - deductionProof.count, 1))
                 ]
-                .map { ($0.0, $0.1.toExpression().substituting(["A": alpha, "B": proof[j].formula, "C": inference.formula]), $0.2) }
+                .map { ($0.0, $0.1.toFormula().substituting(["A": alpha, "B": proof[j].formula, "C": inference.formula]), $0.2) }
                 
             case .notProven:
                 fatalError("The proof must be correct to do deduction")
@@ -72,22 +72,24 @@ func proofDeduction(header: Header, proof: [FormulaInferenceType]) -> [FormulaIn
         formulaNewIndex.append(deductionProof.count - 1)
     }
     
-//    let validationInference = Expression.implication(alpha, header.inference)
-//    let validationGamma = Array(header.gamma.dropLast())
-//    let validationInferenceFile = (header: (gamma: validationGamma, inference: validationInference),
-//                                   proof: deductionProof.map { $0.formula })
-//    let validation = validatePropositionalCalculusProve(inferenceFile: validationInferenceFile)
-//    
-//    print("################\r\r" + validation
-//        .map { "(\($0.line + 1)) \($0.formula.description) (\($0.type.description))" }
-//        .reduce("") { $0 + $1 + "\r" })
-//    
-//    assert(!validation.contains {
-//        switch $0.type {
-//        case .notProven:    return true
-//        default:            return false
-//        }
-//    })
+//    validate(gamma: Array(header.gamma.dropLast()), inference: Formula(.implication(alpha, header.inference)), inferenceProof: deductionProof)
     
     return deductionProof
+}
+
+private func validate(gamma: [Formula], inference: Formula, inferenceProof: [FormulaInferenceType]) {
+    let inferenceFile = (header: (gamma: gamma, inference: inference),
+                                   proof: inferenceProof.map { $0.formula })
+    let validation = validatePropositionalCalculusProve(inferenceFile: inferenceFile)
+    
+    print("################\r\r" + validation
+        .map { "(\($0.line + 1)) \($0.formula.description) (\($0.type.description))" }
+        .reduce("") { $0 + $1 + "\r" })
+    
+    assert(!validation.contains {
+        switch $0.type {
+        case .notProven:    return true
+        default:            return false
+        }
+    })
 }

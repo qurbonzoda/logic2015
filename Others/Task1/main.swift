@@ -32,7 +32,7 @@ do {
             + inferenceTypes
                 .map { "(\($0.line + 1)) \($0.formula.description) (\($0.type.description))" }
                 .reduce("") { $0 + $1 + "\r" })
-            .write(toFile: outputPath, atomically: true, encoding: .utf8)
+            .write(toFile: outputPath, atomically: false, encoding: .utf8)
     }
 } catch {
     print("an error occured, cause: \(error)")

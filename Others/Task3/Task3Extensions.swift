@@ -9,9 +9,9 @@
 import Foundation
 
 
-extension Expression {
-    func evaluate(considering dict: [Expression: Bool]) -> Bool {
-        switch self {
+extension Formula {
+    func evaluate(considering dict: [Formula: Bool]) -> Bool {
+        switch self.unboxed {
         case .variable(_):
             return dict[self]!
         case let .implication(lhs, rhs):
@@ -31,11 +31,11 @@ extension Expression {
         }
     }
     
-    func distinctVariables() -> [Expression] {
-        var variables = Set<Expression>()
+    func distinctVariables() -> [Formula] {
+        var variables = Set<Formula>()
         
-        self.forEach {
-            switch $0 {
+        self.postOrderTraversal {
+            switch $0.unboxed {
             case .variable(_):
                 variables.insert($0)
             default:
@@ -46,28 +46,29 @@ extension Expression {
         return Array(variables)
     }
     
-    private func forEach(_ body: (Expression) -> Void) {
-        switch self {
+    private func postOrderTraversal(_ body: (Formula) -> Void) {
+        switch self.unboxed {
         case .variable(_):
             break
         case .implication(let lhs, let rhs),
              .disjunction(let lhs, let rhs),
              .conjunction(let lhs, let rhs):
-            lhs.forEach(body)
-            rhs.forEach(body)
+            lhs.postOrderTraversal(body)
+            rhs.postOrderTraversal(body)
         case .negation(let negated):
-            negated.forEach(body)
+            negated.postOrderTraversal(body)
         }
         
         body(self)
     }
     
-    func proof(considering dict: [Expression: Bool], gamma: [Expression]) -> [FormulaInferenceType] {
+    func proof(considering dict: [Formula: Bool], gamma: [Formula]) -> [FormulaInferenceType] {
         var formulas = [FormulaInferenceType]()
         
-        self.forEach {
+        self.postOrderTraversal {
             let proof: [FormulaInferenceType]
-            switch $0 {
+            
+            switch $0.unboxed {
             case .variable(_):
                 let variable = $0
                 proof = variableProof[variable.evaluate(considering: dict)]!.map {
@@ -90,16 +91,20 @@ extension Expression {
                     ($0.line, $0.formula.substituting(["A": negated]), $0.type)
                 }
             }
+            
             let assumptionsCorrected: [FormulaInferenceType] = proof.map { inference in
                 let actualType: InferenceType
+                
                 switch inference.type {
                 case .assumption(_):
                     if let indexInGamma = gamma.index(of: inference.formula) {
                         actualType = .assumption(indexInGamma)
                     } else if let indexInFormulas = formulas.index(where: { inference.formula == $0.formula }) {
                         switch formulas[indexInFormulas].type {
-                        case .modusPonens(let i, let j):    actualType = .modusPonens(i - formulas.count, j - formulas.count)
-                        default:                            actualType = formulas[indexInFormulas].type
+                        case .modusPonens(let i, let j):
+                            actualType = .modusPonens(i - formulas.count, j - formulas.count)
+                        default:
+                            actualType = formulas[indexInFormulas].type
                         }
                     } else {
                         fatalError("Unreachable")
@@ -107,8 +112,10 @@ extension Expression {
                 default:
                     actualType = inference.type
                 }
+                
                 return (inference.line, inference.formula, actualType)
             }
+            
             formulas.append(contentsOf: assumptionsCorrected.formulaIndicesShifted(by: formulas.count))
         }
         

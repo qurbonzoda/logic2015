@@ -19,13 +19,13 @@ let axioms = [
     "(A->C)->(B->C)->(A|B->C)",
     "(A->C)->(A->!C)->!A",
     "!!A->A"
-].map { $0.toExpression() }
+].map { $0.toFormula() }
 
-func isAxiom(_ expression: Expression) -> Bool {
-    return axioms.contains(where: { expression.conformsTo(axiom: $0) })
+func isAxiom(_ formula: Formula) -> Bool {
+    return axioms.contains(where: { formula.conformsTo(axiom: $0) })
 }
 
-func axiomNumber(of expression: Expression) -> Int? {
-    return axioms.enumerated().first { expression.conformsTo(axiom: $0.element) }?.offset
+func axiomNumber(of formula: Formula) -> Int? {
+    return axioms.enumerated().first { formula.conformsTo(axiom: $0.element) }?.offset
 }
 

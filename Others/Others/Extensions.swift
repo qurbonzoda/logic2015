@@ -14,18 +14,12 @@ public extension String {
     }
 }
 
-extension Expression: Hashable {
-    public var hashValue: Int {
-        return self.description.hashValue
-    }
-}
-
-public extension Expression {
-    func conformsTo(axiom: Expression) -> Bool {
-        var mapping = [String : Expression]()
+public extension Formula {
+    func conformsTo(axiom: Formula) -> Bool {
+        var mapping = [String : Formula]()
         
-        func check(_ first: Expression, and second: Expression) -> Bool {
-            switch (first, second) {
+        func check(_ first: Formula, and second: Formula) -> Bool {
+            switch (first.unboxed, second.unboxed) {
             case let (.implication(firstLhs, firstRhs), .implication(secondLhs, secondRhs)),
                  let (.disjunction(firstLhs, firstRhs), .disjunction(secondLhs, secondRhs)),
                  let (.conjunction(firstLhs, firstRhs), .conjunction(secondLhs, secondRhs)):

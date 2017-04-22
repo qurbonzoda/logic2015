@@ -8,20 +8,20 @@
 
 import Foundation
 
-typealias FormulaInferenceType = (line: Int, formula: Expression, type: InferenceType)
+typealias FormulaInferenceType = (line: Int, formula: Formula, type: InferenceType)
 
 func validatePropositionalCalculusProve(inferenceFile: InferenceFile) -> [FormulaInferenceType] {
     let inference = inferenceFile.header.inference
     let proof = inferenceFile.proof
     
-    var assumptionIndex = [Expression : Int]()
+    var assumptionIndex = [Formula : Int]()
     inferenceFile.header.gamma.enumerated().forEach { assumptionIndex[$1] = $0 }
     
-    var formulaIndex = Dictionary<Expression, Int>(minimumCapacity: proof.count * 5)
-    var deducingsOfInference = Dictionary<Expression, [(index: Int, deducing: Expression)]>(minimumCapacity: proof.count * 5)
+    var formulaIndex = Dictionary<Formula, Int>(minimumCapacity: proof.count * 5)
+    var deducingsOfInference = Dictionary<Formula, [(index: Int, deducing: Formula)]>(minimumCapacity: proof.count * 5)
     let maxDeducingsCount = 20
     
-    func modusPonensInference(of formula: Expression, from precedingFormulas: ArraySlice<Expression>) -> (Int, Int)? {
+    func modusPonensInference(of formula: Formula, from precedingFormulas: ArraySlice<Formula>) -> (Int, Int)? {
         guard let deducingsOfFormula = deducingsOfInference[formula] else {
             return nil
         }
@@ -37,7 +37,7 @@ func validatePropositionalCalculusProve(inferenceFile: InferenceFile) -> [Formul
         }
         
         for precedingFormula in precedingFormulas.enumerated() {
-            switch precedingFormula.element {
+            switch precedingFormula.element.unboxed {
             case let .implication(lhs, rhs) where rhs == formula:
                 if let lhsIndex = formulaIndex[lhs] {
                     return (lhsIndex, precedingFormula.offset)
@@ -67,7 +67,7 @@ func validatePropositionalCalculusProve(inferenceFile: InferenceFile) -> [Formul
         formulasInferenceTypes.append((line: index, formula: formula, type: inferenceType))
         formulaIndex[formula] = index
         
-        switch formula {
+        switch formula.unboxed {
         case let .implication(lhs, rhs):
             if deducingsOfInference[rhs] == nil {
                 deducingsOfInference[rhs] = []

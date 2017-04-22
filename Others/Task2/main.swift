@@ -22,7 +22,7 @@ do {
         
         try proofDeduction(header: inferenceFile.header, proof: inferenceTypes)
             .reduce("", { $0 + $1.formula.description + "\n" })
-            .write(toFile: outputPath, atomically: true, encoding: .utf8)
+            .write(toFile: outputPath, atomically: false, encoding: .utf8)
     
 }
 } catch {

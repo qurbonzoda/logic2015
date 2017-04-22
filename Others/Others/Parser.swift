@@ -4,12 +4,12 @@
 
 import Foundation
 
-public typealias Assumptions = [Expression]
-public typealias Header = (gamma: Assumptions, inference: Expression)
-public typealias InferenceFile = (header: Header, proof: [Expression])
+public typealias Assumptions = [Formula]
+public typealias Header = (gamma: Assumptions, inference: Formula)
+public typealias InferenceFile = (header: Header, proof: [Formula])
 
 private extension Array where Element == String {
-    func removingEmptyExpressions() -> [Element] {
+    func removingEmptyFormulas() -> [Element] {
         return self
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
@@ -17,20 +17,20 @@ private extension Array where Element == String {
 }
 
 extension String {
-    func toExpression() -> Expression {
-        guard let parsedExpression = ExpressionParser(expression: self).parseImplication() else {
-            fatalError("Wrong expression format, expression: \(self)")
+    func toFormula() -> Formula {
+        guard let parsedFormula = FormulaParser(formula: self).parseImplication() else {
+            fatalError("Wrong formula format, formula: \(self)")
         }
-        return parsedExpression
+        return parsedFormula
     }
 }
 
 func parse(fileAtPath filePath: String) throws -> InferenceFile {
     let content = try String(contentsOfFile: filePath, encoding: .utf8)
     
-    let fileLines = content.components(separatedBy: .newlines).removingEmptyExpressions()
+    let fileLines = content.components(separatedBy: .newlines).removingEmptyFormulas()
     let header = parse(header: fileLines.first!)
-    let proof = fileLines.dropFirst().map { $0.toExpression() }
+    let proof = fileLines.dropFirst().map { $0.toFormula() }
     
     assert(header.inference == proof.last, "The last statement of proof must be proof inference")
     
@@ -42,86 +42,89 @@ func parse(header: String) -> Header {
     assert(headerComponents.count == 2, "Wrong header format: \(header)")
     
     let gamma = headerComponents.first!.components(separatedBy: ",")
-            .removingEmptyExpressions()
-            .map { $0.toExpression() }
+            .removingEmptyFormulas()
+            .map { $0.toFormula() }
     
-    let inference = headerComponents.last!.toExpression()
+    let inference = headerComponents.last!.toFormula()
     
     return (gamma: gamma, inference: inference)
 }
 
-func parse(proof: String) -> [Expression] {
-    let proofLines = proof.components(separatedBy: .newlines).removingEmptyExpressions()
-    return proofLines.map { $0.toExpression() }
+func parse(proof: String) -> [Formula] {
+    let proofLines = proof.components(separatedBy: .newlines).removingEmptyFormulas()
+    return proofLines.map { $0.toFormula() }
 }
 
-private class ExpressionParser {
-    var expression: String
+private class FormulaParser {
+    var formula: String
     var index: String.Index
     
-    init(expression: String) {
-        self.expression = expression.replacingOccurrences(of: " ", with: "")
-        index = self.expression.startIndex
+    init(formula: String) {
+        self.formula = formula.replacingOccurrences(of: " ", with: "")
+        index = self.formula.startIndex
     }
     
-    func parseImplication() -> Expression? {
+    func parseImplication() -> Formula? {
         var result = parseDisjunction()
-        while index != expression.endIndex && expression[index] == "-" {
+        while index != formula.endIndex && currentChar == "-" {
             advanceIndex()
             advanceIndex()
-            result = .implication(result!, parseImplication()!)
+            result = Formula(.implication(result!, parseImplication()!))
         }
         return result
     }
     
-    func parseDisjunction() -> Expression? {
+    func parseDisjunction() -> Formula? {
         var result = parseConjunction()
-        while index != expression.endIndex && expression[index] == "|" {
+        while index != formula.endIndex && currentChar == "|" {
             advanceIndex()
-            result = .disjunction(result!, parseConjunction()!)
+            result = Formula(.disjunction(result!, parseConjunction()!))
         }
         return result
     }
     
-    func parseConjunction() -> Expression? {
+    func parseConjunction() -> Formula? {
         var result = parseNegation()
-        while index != expression.endIndex && expression[index] == "&" {
+        while index != formula.endIndex && currentChar == "&" {
             advanceIndex()
-            result = .conjunction(result!, parseNegation()!)
+            result = Formula(.conjunction(result!, parseNegation()!))
         }
         return result
     }
     
-    func parseNegation() -> Expression? {
+    func parseNegation() -> Formula? {
         var result = parseVariable()
-        if index != expression.endIndex && expression[index] == "(" {
+        if index != formula.endIndex && currentChar == "(" {
             advanceIndex()
             result = parseImplication()
             advanceIndex()
-        } else if index != expression.endIndex && expression[index] == "!" {
+        } else if index != formula.endIndex && currentChar == "!" {
             advanceIndex()
-            result = .negation(parseNegation()!)
+            result = Formula(.negation(parseNegation()!))
         }
         return result
     }
     
-    func parseVariable() -> Expression? {
-        let alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        let letters = alpha + alpha.lowercased()
+    func parseVariable() -> Formula? {
+        let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         let digits = "0123456789"
         
-        if letters.contains(expression[index]) {
+        if letters.contains(currentChar) {
             var name = ""
-            while index != expression.endIndex && (letters.contains(expression[index]) || digits.contains(expression[index])) {
-                name.append(expression[index])
+            while index != formula.endIndex && (letters.contains(currentChar) || digits.contains(currentChar)) {
+                name.append(currentChar)
                 advanceIndex()
             }
-            return .variable(name)
+            return Formula(.variable(name))
         }
         return nil
     }
     
+    var currentChar: Character {
+        return formula[index]
+    }
+    
     func advanceIndex() {
-        index = expression.index(after: index)
+        index = formula.index(after: index)
     }
 }
